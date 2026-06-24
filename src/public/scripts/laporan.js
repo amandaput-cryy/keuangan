@@ -119,14 +119,5 @@ document.getElementById('export-btn').addEventListener('click', () => {
   document.body.removeChild(element);
 });
 
-// Setup logout button
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    logout();
-  });
-}
-
 // Load on page load
 document.addEventListener('DOMContentLoaded', loadLaporan);

@@ -49,7 +49,7 @@ function updateTabel(transaksi) {
     row.insertCell(0).textContent = index + 1;
     row.insertCell(1).textContent = ubahTanggal(t.tanggal);
     row.insertCell(2).textContent = t.keterangan;
-    row.insertCell(3).textContent = t.jenis === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran';
+    row.insertCell(3).textContent = t.jenis === 'Pemasukan' ? 'Pemasukan' : 'Pengeluaran';
     row.insertCell(4).textContent = 'Rp ' + parseFloat(t.jumlah).toLocaleString('id-ID');
     
     const aksiCell = row.insertCell(5);
@@ -167,8 +167,9 @@ function filterTransaksi(keyword) {
 }
 
 // Search Handler
-inputCari.addEventListener('input', (e) => {
-  filterTransaksi(e.target.value.trim().toLowerCase());
+btnCari.addEventListener('click', () => {
+  const keyword = inputCari.value.trim().toLowerCase();
+  filterTransaksi(keyword);
 });
 
 if (btnCari) {

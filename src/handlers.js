@@ -2,13 +2,13 @@ const db = require("./db");
 const bcrypt = require('bcrypt');
 
 async function getKategoriIdByJenis(jenis) {
-  const jenisDb = jenis === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran';
+  const jenisDb = jenis === 'Pemasukan' ? 'Pemasukan' : 'Pengeluaran';
   const [rows] = await db.query('SELECT id_kategori FROM kategori WHERE jenis = ? LIMIT 1', [jenisDb]);
   if (rows.length > 0) {
     return rows[0].id_kategori;
   }
 
-  const namaKategori = jenis === 'pemasukan' ? 'Umum Pemasukan' : 'Umum Pengeluaran';
+  const namaKategori = jenis === 'Pemasukan' ? 'Umum Pemasukan' : 'Umum Pengeluaran';
   const [result] = await db.query('INSERT INTO kategori (nama_kategori, jenis) VALUES (?, ?)', [namaKategori, jenisDb]);
   return result.insertId;
 }
@@ -280,10 +280,15 @@ exports.getMonthlyReport = async (req, res) => {
     
     const params = [userId];
     
-    if (year && month) {
-      query += ` AND YEAR(tanggal) = ? AND MONTH(tanggal) = ?`;
-      params.push(year, month);
-    }
+    if (year) {
+  query += ` AND YEAR(tanggal) = ?`;
+  params.push(year);
+}
+
+if (month) {
+  query += ` AND MONTH(tanggal) = ?`;
+  params.push(month);
+}
     
     query += ` GROUP BY DATE_FORMAT(tanggal, '%Y-%m') ORDER BY bulan DESC`;
     

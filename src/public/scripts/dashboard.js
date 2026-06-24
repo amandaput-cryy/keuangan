@@ -35,15 +35,17 @@ async function loadDashboard() {
     const chartResponse = await fetch('/api/dashboard/chart');
     const chartData = await chartResponse.json();
     
-    const labels = chartData.map(d => d.bulan).reverse();
-    const incomeData = chartData.map(d => d.income).reverse();
-    const expenseData = chartData.map(d => d.expense).reverse();
+    const labels = chartData.map(d => d.bulan);
+    const incomeData = chartData.map(d => d.income);
+    const expenseData = chartData.map(d => d.expense);
     
     const ctx = document.getElementById('chart').getContext('2d');
     
     if (chart) {
       chart.destroy();
     }
+
+    console.log("chartData:", chartData);
     
     chart = new Chart(ctx, {
       type: 'line',
@@ -102,14 +104,6 @@ async function loadDashboard() {
   }
 }
 
-// Setup logout button
-const logoutBtn = document.getElementById('logout-btn');
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    logout();
-  });
-}
 
 // Load dashboard on page load
 document.addEventListener('DOMContentLoaded', loadDashboard);
