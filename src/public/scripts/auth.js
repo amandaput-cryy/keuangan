@@ -35,7 +35,7 @@ if (loginForm) {
       
       if (response.ok) {
         // Login berhasil
-        window.location.href = 'dashboard.html';
+        window.location.href = '/pages/dashboard.html';
       } else {
         // Login gagal
         errorMessageDiv.textContent = data.error || 'Login gagal';
