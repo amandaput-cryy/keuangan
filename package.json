@@ -1,0 +1,25 @@
+{
+  "name": "financemanagement",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "echo http://localhost:3000 && start \"\" \"http://localhost:3000\" && node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Manajemen",
+    "Keuangan"
+  ],
+  "author": "Joko Nugroho",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.1.2"
+  }
+}
