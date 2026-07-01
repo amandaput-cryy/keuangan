@@ -50,7 +50,7 @@ Oleh karena itu, dikembangkan sistem **Manajemen Keuangan Pribadi berbasis web**
 * Tampilan rekap pemasukan & pengeluaran
 
  **Catatan:**
-Tidak ada fitur akun pemilik khusus, hanya menggunakan **username pengguna biasa (user login)**.
+Tidak ada fitur untuk akun pemilik khusus, hanya menggunakan **username pengguna biasa (user login)**.
 
 ---
 
