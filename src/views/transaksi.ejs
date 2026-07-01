@@ -22,11 +22,11 @@
 
     <div class="form-section">
       <h3 id="form-title">Tambah Transaksi</h3>
-      <form id="form-transaksi">
+      <form id="form-transaksi" action="/transaksi" method="POST">
         <div class="form-row">
           <div class="form-group">
             <label for="jenis">Jenis:</label>
-            <select id="jenis" required>
+            <select id="jenis" name="jenis" required>
               <option value="">Pilih Jenis</option>
               <option value="Pemasukan">Pemasukan</option>
               <option value="Pengeluaran">Pengeluaran</option>
@@ -34,24 +34,23 @@
           </div>
           <div class="form-group">
             <label for="tanggal">Tanggal:</label>
-            <input type="date" id="tanggal" required>
+            <input type="date" id="tanggal" name="tanggal" required>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="keterangan">Keterangan:</label>
-            <input type="text" id="keterangan" placeholder="Masukkan keterangan" required>
+            <input type="text" id="keterangan" name="deskripsi" placeholder="Masukkan keterangan" required>
           </div>
           <div class="form-group">
             <label for="jumlah">Jumlah:</label>
-            <input type="number" id="jumlah" placeholder="Masukkan jumlah" min="1" required>
+            <input type="number" id="jumlah" name="jumlah" placeholder="Masukkan jumlah" min="1" required>
           </div>
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Simpan</button>
           <button type="reset" class="btn btn-secondary">Reset</button>
         </div>
-        <div id="form-message" class="form-message"></div>
       </form>
     </div>
 
@@ -74,7 +73,28 @@
             <th>Aksi</th>
           </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+          <% if (typeof transaksi !== 'undefined' && transaksi.length > 0) { %>
+            <% transaksi.forEach((t, index) => { %>
+              <tr>
+                <td><%= index + 1 %></td>
+                <td><%= t.tanggal %></td>
+                <td><%= t.deskripsi %></td>
+                <td><%= t.jenis %></td>
+                <td>Rp <%= t.jumlah.toLocaleString('id-ID') %></td>
+                <td>
+                  <form action="/transaksi/hapus/<%= t.id %>" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger" style="background-color: red; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Hapus</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 20px;">Belum ada data transaksi.</td>
+            </tr>
+          <% } %>
+        </tbody>
       </table>
     </div>
   </main>

@@ -11,6 +11,12 @@ const authRoutes = require('./routes/auth');
 
 app.use('/api/auth', authRoutes);
 
+const transaksiRoutes = require('./src/routes/transaksi');
+const kategoriRoutes = require('./src/routes/kategori');
+
+app.use('/api/transaksi', transaksiRoutes);
+app.use('/api/kategori', kategoriRoutes);
+
 
 app.listen(3000,()=>{
     console.log(

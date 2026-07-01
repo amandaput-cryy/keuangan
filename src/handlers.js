@@ -1,19 +1,6 @@
 const db = require("./db");
 const bcrypt = require('bcrypt');
 
-async function getKategoriIdByJenis(jenis) {
-  const normalized = typeof jenis === 'string' ? jenis.toLowerCase() : '';
-  const jenisDb = normalized === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran';
-  const [rows] = await db.query('SELECT id_kategori FROM kategori WHERE jenis = ? LIMIT 1', [jenisDb]);
-  if (rows.length > 0) {
-    return rows[0].id_kategori;
-  }
-
-  const namaKategori = jenisDb === 'Pemasukan' ? 'Umum Pemasukan' : 'Umum Pengeluaran';
-  const [result] = await db.query('INSERT INTO kategori (nama_kategori, jenis) VALUES (?, ?)', [namaKategori, jenisDb]);
-  return result.insertId;
-}
-
 // AUTENTIKASI - Anggota 2
 exports.register = async (req, res) => {
   const { nama, email, password, confirmPassword } = req.body;
@@ -111,6 +98,7 @@ exports.getCurrentUser = (req, res) => {
 };
 
 // CRUD TRANSAKSI - Anggota 3 (dengan user_id)
+// CRUD TRANSAKSI - Anggota 3 (dengan user_id)
 exports.daftarTransaksi = async (req, res) => {
   const userId = req.session.userId;
   
@@ -135,16 +123,17 @@ exports.daftarTransaksi = async (req, res) => {
 };
 
 exports.tambahTransaksi = async (req, res) => {
-  const { jenis, tanggal, jumlah, keterangan } = req.body;
+  // DIUBAH: Menangkap id_kategori, bukan jenis
+  const { id_kategori, tanggal, jumlah, keterangan } = req.body;
   const userId = req.session.userId;
   
   if (!userId) {
     return res.status(401).json({ error: 'Harus login terlebih dahulu' });
   }
   
-  // Validasi transaksi
-  if (!jenis || !tanggal || !jumlah) {
-    return res.status(400).json({ error: 'Jenis, tanggal, dan jumlah harus diisi' });
+  // DIUBAH: Validasi mengecek id_kategori
+  if (!id_kategori || !tanggal || !jumlah) {
+    return res.status(400).json({ error: 'Kategori, tanggal, dan jumlah harus diisi' });
   }
   
   if (jumlah <= 0) {
@@ -152,10 +141,10 @@ exports.tambahTransaksi = async (req, res) => {
   }
   
   try {
-    const idKategori = await getKategoriIdByJenis(jenis);
+    // DIUBAH: Langsung menggunakan id_kategori ke database
     await db.query(
       'INSERT INTO transaksi (id_user, id_kategori, jumlah, tanggal, keterangan) VALUES (?, ?, ?, ?, ?)', 
-      [userId, idKategori, jumlah, tanggal, keterangan]
+      [userId, id_kategori, jumlah, tanggal, keterangan]
     );
     res.status(201).json({ message: 'Transaksi berhasil ditambahkan' });
   } catch (err) {
@@ -166,16 +155,17 @@ exports.tambahTransaksi = async (req, res) => {
 
 exports.editTransaksi = async (req, res) => {
   const { id } = req.params;
-  const { jenis, tanggal, jumlah, keterangan } = req.body;
+  // DIUBAH: Menangkap id_kategori, bukan jenis
+  const { id_kategori, tanggal, jumlah, keterangan } = req.body;
   const userId = req.session.userId;
   
   if (!userId) {
     return res.status(401).json({ error: 'Harus login terlebih dahulu' });
   }
   
-  // Validasi transaksi
-  if (!jenis || !tanggal || !jumlah) {
-    return res.status(400).json({ error: 'Jenis, tanggal, dan jumlah harus diisi' });
+  // DIUBAH: Validasi mengecek id_kategori
+  if (!id_kategori || !tanggal || !jumlah) {
+    return res.status(400).json({ error: 'Kategori, tanggal, dan jumlah harus diisi' });
   }
   
   if (jumlah <= 0) {
@@ -183,7 +173,6 @@ exports.editTransaksi = async (req, res) => {
   }
   
   try {
-    // Cek apakah transaksi milik user
     const [transaksi] = await db.query(
       'SELECT id_transaksi AS id FROM transaksi WHERE id_transaksi = ? AND id_user = ?', 
       [id, userId]
@@ -193,10 +182,10 @@ exports.editTransaksi = async (req, res) => {
       return res.status(403).json({ error: 'Transaksi tidak ditemukan' });
     }
     
-    const idKategori = await getKategoriIdByJenis(jenis);
+    // DIUBAH: Menggunakan id_kategori untuk UPDATE
     await db.query(
       'UPDATE transaksi SET id_kategori = ?, tanggal = ?, jumlah = ?, keterangan = ? WHERE id_transaksi = ?',
-      [idKategori, tanggal, jumlah, keterangan, id]
+      [id_kategori, tanggal, jumlah, keterangan, id]
     );
     
     res.json({ message: 'Transaksi berhasil diperbarui' });
@@ -215,7 +204,6 @@ exports.hapusTransaksi = async (req, res) => {
   }
   
   try {
-    // Cek apakah transaksi milik user
     const [transaksi] = await db.query(
       'SELECT id_transaksi AS id FROM transaksi WHERE id_transaksi = ? AND id_user = ?', 
       [id, userId]
@@ -356,6 +344,64 @@ exports.getChartData = async (req, res) => {
       income: parseFloat(row.income),
       expense: parseFloat(row.expense)
     })));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Kesalahan server internal' });
+  }
+};
+
+// ==========================================
+// CRUD KATEGORI (Dibutuhkan untuk Form Transaksi)
+// ==========================================
+
+exports.daftarKategori = async (req, res) => {
+  try {
+    const [kategori] = await db.query('SELECT * FROM kategori ORDER BY jenis, nama_kategori');
+    res.json(kategori);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Kesalahan server internal' });
+  }
+};
+
+exports.tambahKategori = async (req, res) => {
+  const { nama_kategori, jenis } = req.body;
+  if (!nama_kategori || !jenis) {
+    return res.status(400).json({ error: 'Nama kategori dan jenis harus diisi' });
+  }
+  try {
+    await db.query('INSERT INTO kategori (nama_kategori, jenis) VALUES (?, ?)', [nama_kategori, jenis]);
+    res.status(201).json({ message: 'Kategori berhasil ditambahkan' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Kesalahan server internal' });
+  }
+};
+
+exports.editKategori = async (req, res) => {
+  const { id } = req.params;
+  const { nama_kategori, jenis } = req.body;
+  if (!nama_kategori || !jenis) {
+    return res.status(400).json({ error: 'Nama kategori dan jenis harus diisi' });
+  }
+  try {
+    await db.query('UPDATE kategori SET nama_kategori = ?, jenis = ? WHERE id_kategori = ?', [nama_kategori, jenis, id]);
+    res.json({ message: 'Kategori berhasil diperbarui' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Kesalahan server internal' });
+  }
+};
+
+exports.hapusKategori = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [transaksiTerkait] = await db.query('SELECT id_transaksi FROM transaksi WHERE id_kategori = ? LIMIT 1', [id]);
+    if (transaksiTerkait.length > 0) {
+      return res.status(400).json({ error: 'Gagal menghapus: Kategori sedang dipakai di transaksi.' });
+    }
+    await db.query('DELETE FROM kategori WHERE id_kategori = ?', [id]);
+    res.json({ message: 'Kategori berhasil dihapus' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Kesalahan server internal' });
