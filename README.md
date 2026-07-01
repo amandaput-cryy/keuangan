@@ -164,7 +164,7 @@ Mengelola transaksi:
 * Hapus transaksi
 * Menampilkan transaksi pengguna
 
-# Anggota 4 — Dashboard, Grafik, dan Laporan (Ghina Fadhila Rahmah-292451166)
+# Anggota 4 — Dashboard, Grafik, dan Laporan (Ghina Fadhillah Rahmah-292451166)
 ### Tugas
 Membuat:
 * Ringkasan keuangan
