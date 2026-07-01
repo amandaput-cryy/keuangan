@@ -10,7 +10,15 @@
   <%- include('partials/navbar', { active: 'transaksi' }) %>
 
   <main class="container transaksi-container">
-    <h2>Kelola Transaksi</h2>
+    <div class="dashboard-header">
+      <div>
+        <h2 class="page-title">Kelola Transaksi</h2>
+        <p class="page-subtitle">Tambahkan atau perbarui pemasukan dan pengeluaran dengan mudah.</p>
+      </div>
+      <div class="dashboard-actions">
+        <button type="button" class="btn btn-secondary" id="clear-form-btn">Bersihkan Form</button>
+      </div>
+    </div>
 
     <div class="form-section">
       <h3 id="form-title">Tambah Transaksi</h3>
@@ -20,8 +28,8 @@
             <label for="jenis">Jenis:</label>
             <select id="jenis" required>
               <option value="">Pilih Jenis</option>
-              <option value="pemasukan">Pemasukan</option>
-              <option value="pengeluaran">Pengeluaran</option>
+              <option value="Pemasukan">Pemasukan</option>
+              <option value="Pengeluaran">Pengeluaran</option>
             </select>
           </div>
           <div class="form-group">
@@ -41,13 +49,14 @@
         </div>
         <div class="form-actions">
           <button type="submit" class="btn btn-primary">Simpan</button>
-          <button type="reset" class="btn btn-secondary" id="reset-btn">Reset</button>
+          <button type="reset" class="btn btn-secondary">Reset</button>
         </div>
         <div id="form-message" class="form-message"></div>
       </form>
     </div>
 
     <div class="filter-section">
+      <h3>Temukan Transaksi</h3>
       <input type="text" id="cari" placeholder="Cari transaksi...">
       <button type="button" class="btn btn-primary" id="btn-cari">Cari</button>
     </div>

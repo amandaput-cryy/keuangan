@@ -9,23 +9,79 @@
 <body>
   <%- include('partials/navbar-auth', { active: 'login' }) %>
 
-  <main class="container auth-container">
-    <div class="auth-box">
-      <h2>Login</h2>
+  <main class="container auth-grid">
+    <section class="auth-hero">
+      <div class="hero-label">Keuangan</div>
+      <p class="eyebrow">Masuk dengan mudah dan aman</p>
+      <h1>Login ke platform pengelolaan keuangan yang cepat dan clean.</h1>
+      <p class="hero-text">Akses ringkasan keuangan, transaksi, dan laporan secara instan dengan tampilan yang modern serta terpercaya.</p>
+      <div class="hero-actions">
+        <span class="hero-pill">Aman</span>
+        <span class="hero-pill">Instan</span>
+        <span class="hero-pill">Terintegrasi</span>
+      </div>
+      <div class="auth-hero-stats">
+        <div class="auth-stat-card">
+          <strong>99.9%</strong>
+          <span>Waktu akses cepat</span>
+        </div>
+        <div class="auth-stat-card">
+          <strong>24/7</strong>
+          <span>Keamanan online</span>
+        </div>
+      </div>
+      <div class="auth-hero-extra">
+        <div class="auth-hero-note">
+          <strong>Login dan langsung cek keuangan</strong>
+          <p>Setelah masuk, Anda bisa langsung melihat ringkasan saldo, transaksi terbaru, dan rencana anggaran.</p>
+        </div>
+        <div class="hero-mini-boxes">
+          <div class="hero-mini-box">
+            <strong>Terpercaya</strong>
+            <span>Keamanan data jadi prioritas.</span>
+          </div>
+          <div class="hero-mini-box">
+            <strong>Terhubung</strong>
+            <span>Sinkronisasikan catatan Anda setiap saat.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-form-card">
+      <div class="form-badge">Login Secure</div>
+      <div class="auth-card-header">
+        <h2>Masuk</h2>
+        <p>Gunakan email dan password untuk membuka dasbor personal Anda.</p>
+      </div>
       <form id="login-form">
         <div class="form-group">
-          <label for="email">Email:</label>
+          <label for="email">Email</label>
           <input type="email" id="email" name="email" required>
         </div>
         <div class="form-group">
-          <label for="password">Password:</label>
+          <label for="password">Password</label>
           <input type="password" id="password" name="password" required>
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
       </form>
+      <div class="auth-form-box">
+        <h3>Keamanan login</h3>
+        <p>Login Anda dilindungi dan data keuangan tersimpan aman. Setelah masuk, Anda langsung masuk ke dashboard yang siap pakai.</p>
+      </div>
+      <div class="auth-summary-grid">
+        <div class="highlight-card">
+          <strong>Ringkas</strong>
+          <span>Masuk cepat tanpa ribet.</span>
+        </div>
+        <div class="highlight-card">
+          <strong>Terkoneksi</strong>
+          <span>Data langsung siap digunakan.</span>
+        </div>
+      </div>
       <p class="auth-link">Belum punya akun? <a href="/register">Register di sini</a></p>
       <div id="error-message" class="error-message"></div>
-    </div>
+    </section>
   </main>
 
   <%- include('partials/footer') %>

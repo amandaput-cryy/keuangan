@@ -9,31 +9,83 @@
 <body>
   <%- include('partials/navbar-auth', { active: 'register' }) %>
 
-  <main class="container auth-container">
-    <div class="auth-box">
-      <h2>Register</h2>
+  <main class="container auth-grid">
+    <section class="auth-hero">
+      <div class="hero-label">Keuangan</div>
+      <p class="eyebrow">Daftar dalam hitungan menit</p>
+      <h1>Mulai mengelola keuangan dengan pengalaman yang lebih modern.</h1>
+      <p class="hero-text">Buat akun gratis untuk memantau pemasukan, pengeluaran, dan laporan dengan interface yang rapi dan simpel.</p>
+      <div class="hero-actions">
+        <span class="hero-pill">Gratis</span>
+        <span class="hero-pill">Cepat</span>
+        <span class="hero-pill">Terstruktur</span>
+      </div>
+      <div class="auth-hero-stats">
+        <div class="auth-stat-card">
+          <strong>0%</strong>
+          <span>Biaya pendaftaran</span>
+        </div>
+        <div class="auth-stat-card">
+          <strong>3x</strong>
+          <span>Lebih cepat kelola</span>
+        </div>
+      </div>
+      <div class="auth-hero-extra">
+        <div class="auth-hero-note">
+          <strong>Lebih dari sekadar register</strong>
+          <p>Mulai sekarang, Anda mendapatkan ringkasan otomatis, laporan pengeluaran, dan kontrol anggaran dalam satu aplikasi.</p>
+        </div>
+        <div class="hero-mini-boxes">
+          <div class="hero-mini-box">
+            <strong>Ringkas</strong>
+            <span>Laporan siap dibaca kapan saja.</span>
+          </div>
+          <div class="hero-mini-box">
+            <strong>Aman</strong>
+            <span>Data Anda tersimpan dengan baik.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="auth-form-card">
+      <div class="form-badge">Buat Akun Baru</div>
+      <div class="auth-card-header">
+        <h2>Register</h2>
+        <p>Isi data Anda untuk segera mulai dengan dashboard personal.</p>
+      </div>
       <form id="register-form">
         <div class="form-group">
-          <label for="nama">Nama:</label>
+          <label for="nama">Nama</label>
           <input type="text" id="nama" name="nama" required>
         </div>
         <div class="form-group">
-          <label for="email">Email:</label>
+          <label for="email">Email</label>
           <input type="email" id="email" name="email" required>
         </div>
         <div class="form-group">
-          <label for="password">Password:</label>
+          <label for="password">Password</label>
           <input type="password" id="password" name="password" required>
         </div>
         <div class="form-group">
-          <label for="confirm-password">Konfirmasi Password:</label>
+          <label for="confirm-password">Konfirmasi Password</label>
           <input type="password" id="confirm-password" name="confirmPassword" required>
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
       </form>
+      <div class="auth-summary-grid">
+        <div class="highlight-card">
+          <strong>Portfolio</strong>
+          <span>Catat semua akun keuangan Anda.</span>
+        </div>
+        <div class="highlight-card">
+          <strong>Ringkas</strong>
+          <span>Laporan yang mudah dipahami.</span>
+        </div>
+      </div>
       <p class="auth-link">Sudah punya akun? <a href="/login">Login di sini</a></p>
       <div id="error-message" class="error-message"></div>
-    </div>
+    </section>
   </main>
 
   <%- include('partials/footer') %>

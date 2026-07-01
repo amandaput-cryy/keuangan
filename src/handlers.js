@@ -2,13 +2,14 @@ const db = require("./db");
 const bcrypt = require('bcrypt');
 
 async function getKategoriIdByJenis(jenis) {
-  const jenisDb = jenis === 'Pemasukan' ? 'Pemasukan' : 'Pengeluaran';
+  const normalized = typeof jenis === 'string' ? jenis.toLowerCase() : '';
+  const jenisDb = normalized === 'pemasukan' ? 'Pemasukan' : 'Pengeluaran';
   const [rows] = await db.query('SELECT id_kategori FROM kategori WHERE jenis = ? LIMIT 1', [jenisDb]);
   if (rows.length > 0) {
     return rows[0].id_kategori;
   }
 
-  const namaKategori = jenis === 'Pemasukan' ? 'Umum Pemasukan' : 'Umum Pengeluaran';
+  const namaKategori = jenisDb === 'Pemasukan' ? 'Umum Pemasukan' : 'Umum Pengeluaran';
   const [result] = await db.query('INSERT INTO kategori (nama_kategori, jenis) VALUES (?, ?)', [namaKategori, jenisDb]);
   return result.insertId;
 }
@@ -243,6 +244,9 @@ exports.getFinancialSummary = async (req, res) => {
   try {
     const [summary] = await db.query(`
       SELECT 
+        COUNT(*) AS transactionCount,
+        COALESCE(SUM(CASE WHEN jenis = 'Pemasukan' THEN 1 ELSE 0 END), 0) as incomeCount,
+        COALESCE(SUM(CASE WHEN jenis = 'Pengeluaran' THEN 1 ELSE 0 END), 0) as expenseCount,
         COALESCE(SUM(CASE WHEN jenis = 'Pemasukan' THEN jumlah ELSE 0 END), 0) as totalIncome,
         COALESCE(SUM(CASE WHEN jenis = 'Pengeluaran' THEN jumlah ELSE 0 END), 0) as totalExpense
       FROM transaksi t
@@ -250,14 +254,28 @@ exports.getFinancialSummary = async (req, res) => {
       WHERE t.id_user = ?
     `, [userId]);
     
-    const totalIncome = parseFloat(summary[0].totalIncome);
-    const totalExpense = parseFloat(summary[0].totalExpense);
+    const totalIncome = Number.parseFloat(summary[0].totalIncome) || 0;
+    const totalExpense = Number.parseFloat(summary[0].totalExpense) || 0;
     const balance = totalIncome - totalExpense;
+    const transactionCount = Number.parseInt(summary[0].transactionCount, 10) || 0;
+    const incomeCount = Number.parseInt(summary[0].incomeCount, 10) || 0;
+    const expenseCount = Number.parseInt(summary[0].expenseCount, 10) || 0;
     
+    const totalActivity = totalIncome + totalExpense;
+    const incomeRatio = totalActivity > 0 ? Math.round((totalIncome / totalActivity) * 100) : 0;
+    const expenseRatio = totalActivity > 0 ? Math.round((totalExpense / totalActivity) * 100) : 0;
+    const balanceRatio = totalActivity > 0 ? Math.max(0, Math.min(100, Math.round((balance / totalActivity) * 100))) : 0;
+
     res.json({
       totalIncome,
       totalExpense,
-      balance
+      balance,
+      transactionCount,
+      incomeCount,
+      expenseCount,
+      incomeRatio,
+      expenseRatio,
+      balanceRatio
     });
   } catch (err) {
     console.error(err);

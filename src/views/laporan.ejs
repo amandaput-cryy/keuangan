@@ -10,7 +10,16 @@
   <%- include('partials/navbar', { active: 'laporan' }) %>
 
   <main class="container laporan-container">
-    <h2>Laporan Keuangan</h2>
+    <div class="dashboard-header">
+      <div>
+        <h2 class="page-title">Laporan Keuangan</h2>
+        <p class="page-subtitle">Lihat rangkuman pemasukan, pengeluaran, dan saldo per bulan.</p>
+      </div>
+      <div class="dashboard-actions">
+        <a href="/transaksi" class="btn btn-secondary">Kelola Transaksi</a>
+        <a href="/dashboard" class="btn btn-secondary">Kembali ke Dashboard</a>
+      </div>
+    </div>
 
     <div class="filter-section">
       <h3>Filter Laporan</h3>

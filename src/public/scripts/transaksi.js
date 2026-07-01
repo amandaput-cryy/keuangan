@@ -10,7 +10,7 @@ const tabelBody = document.querySelector('#tabel-transaksi tbody');
 const inputCari = document.getElementById('cari');
 const btnCari = document.getElementById('btn-cari');
 const formTitle = document.getElementById('form-title');
-const resetBtn = document.getElementById('reset-btn');
+const resetBtn = document.getElementById('clear-form-btn');
 const formMessage = document.getElementById('form-message');
 
 const opsiTanggal = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -23,12 +23,15 @@ async function loadTransaksi() {
   // Check authentication
   const authResponse = await fetch('/api/auth/user');
   if (!authResponse.ok) {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
   
   const user = await authResponse.json();
-  document.getElementById('user-name').textContent = user.nama;
+  const navNameEl = document.getElementById('nav-user-name');
+  if (navNameEl) navNameEl.textContent = user.nama;
+  const navAvatarEl = document.getElementById('nav-avatar');
+  if (navAvatarEl) navAvatarEl.textContent = user.nama.charAt(0).toUpperCase();
   
   try {
     const response = await fetch('/api/transaksi');
@@ -152,11 +155,13 @@ formTransaksi.addEventListener('submit', async (e) => {
 });
 
 // Reset Button Handler
-resetBtn.addEventListener('click', () => {
-  formTransaksi.reset();
-  formTitle.textContent = 'Tambah Transaksi';
-  editingId = null;
-});
+if (resetBtn) {
+  resetBtn.addEventListener('click', () => {
+    formTransaksi.reset();
+    formTitle.textContent = 'Tambah Transaksi';
+    editingId = null;
+  });
+}
 
 function filterTransaksi(keyword) {
   const filtered = daftarTransaksi.filter(t => {

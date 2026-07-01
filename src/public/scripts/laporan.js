@@ -5,12 +5,15 @@ async function loadLaporan() {
   // Check authentication
   const authResponse = await fetch('/api/auth/user');
   if (!authResponse.ok) {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
   
   const user = await authResponse.json();
-  document.getElementById('user-name').textContent = user.nama;
+  const navNameEl = document.getElementById('nav-user-name');
+  if (navNameEl) navNameEl.textContent = user.nama;
+  const navAvatarEl = document.getElementById('nav-avatar');
+  if (navAvatarEl) navAvatarEl.textContent = user.nama.charAt(0).toUpperCase();
   
   // Set default year to current year
   const currentYear = new Date().getFullYear();
