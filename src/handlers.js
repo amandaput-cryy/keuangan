@@ -123,34 +123,86 @@ exports.daftarTransaksi = async (req, res) => {
 };
 
 exports.tambahTransaksi = async (req, res) => {
-  // DIUBAH: Menangkap id_kategori, bukan jenis
-  const { id_kategori, tanggal, jumlah, keterangan } = req.body;
+  console.log("DATA TRANSAKSI:", req.body);
+
+  const { jenis, tanggal, jumlah, keterangan } = req.body;
   const userId = req.session.userId;
-  
+
+  console.log("USER ID:", userId);
+
   if (!userId) {
-    return res.status(401).json({ error: 'Harus login terlebih dahulu' });
+    return res.status(401).json({
+      error: 'Harus login terlebih dahulu'
+    });
   }
-  
-  // DIUBAH: Validasi mengecek id_kategori
-  if (!id_kategori || !tanggal || !jumlah) {
-    return res.status(400).json({ error: 'Kategori, tanggal, dan jumlah harus diisi' });
+
+  if (!jenis || !tanggal || !jumlah) {
+    return res.status(400).json({
+      error: 'Jenis, tanggal, dan jumlah harus diisi'
+    });
   }
-  
+
   if (jumlah <= 0) {
-    return res.status(400).json({ error: 'Jumlah harus lebih dari 0' });
+    return res.status(400).json({
+      error: 'Jumlah harus lebih dari 0'
+    });
   }
-  
+
   try {
-    // DIUBAH: Langsung menggunakan id_kategori ke database
-    await db.query(
-      'INSERT INTO transaksi (id_user, id_kategori, jumlah, tanggal, keterangan) VALUES (?, ?, ?, ?, ?)', 
-      [userId, id_kategori, jumlah, tanggal, keterangan]
+    // mencari kategori berdasarkan jenis
+    let [kategori] = await db.query(
+      'SELECT id_kategori FROM kategori WHERE jenis = ? LIMIT 1',
+      [jenis]
     );
-    res.status(201).json({ message: 'Transaksi berhasil ditambahkan' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Kesalahan server internal' });
+    let idKategori;
+    if(kategori.length > 0){
+      idKategori = kategori[0].id_kategori;
+
+    }else{
+
+      // jika kategori belum ada, buat otomatis
+
+      const namaKategori =
+        jenis === "Pemasukan"
+        ? "Umum Pemasukan"
+        : "Umum Pengeluaran";
+
+      const [hasil] = await db.query(
+        'INSERT INTO kategori (nama_kategori, jenis) VALUES (?,?)',
+        [
+          namaKategori,
+          jenis
+        ]
+      );
+
+      idKategori = hasil.insertId;
+    }
+
+    await db.query(
+      `INSERT INTO transaksi 
+      (id_user, id_kategori, jumlah, tanggal, keterangan)
+      VALUES (?,?,?,?,?)`,
+      [
+        userId,
+        idKategori,
+        jumlah,
+        tanggal,
+        keterangan
+      ]
+    );
+
+    res.status(201).json({
+      message:"Transaksi berhasil ditambahkan"
+    });
+
+  } catch(err){
+    console.error("ERROR TRANSAKSI:",err);
+    res.status(500).json({
+      error:err.message
+    });
+
   }
+
 };
 
 exports.editTransaksi = async (req, res) => {

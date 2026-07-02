@@ -124,6 +124,13 @@ formTransaksi.addEventListener('submit', async (e) => {
   const keterangan = inputKeterangan.value.trim();
   const jumlah = parseFloat(inputJumlah.value);
   const tanggal = inputTanggal.value;
+
+  console.log({
+    jenis,
+    keterangan,
+    jumlah,
+    tanggal
+});
   
   if (!jenis || !keterangan || !jumlah || !tanggal) {
     showMessage('Semua field harus diisi', 'error');
